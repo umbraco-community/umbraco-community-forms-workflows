@@ -16,11 +16,13 @@ public class Composer : IComposer
         
         builder.Services.Configure<CommunityOptions>(builder.Config.GetSection(CommunityOptions.SectionName));
         builder.Services.AddHttpClient<IMailcoachService, MailcoachService>();
+        builder.Services.AddHttpClient<IMailerLiteService, MailerLiteService>();
 
         builder.WithCollectionBuilder<WorkflowCollectionBuilder>()
             .Add<CampaignMonitorWorkflow>()
             .Add<MailcoachWorkflow>()
-            .Add<MailChimpWorkflow>();
+            .Add<MailChimpWorkflow>()
+            .Add<MailerLiteWorkflow>();
             
     }
 }

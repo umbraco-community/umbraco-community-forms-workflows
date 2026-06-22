@@ -17,4 +17,10 @@ export const manifests: Array<UmbExtensionManifest> = [
     name: 'Umbraco Forms Community CampaignMonitor Config Repository',
     api: () => import('./campaignmonitor.config.repository.js'),
   },
+  {
+    type: 'repository',
+    alias: 'Umbraco.Forms.Community.MailerLite.Repository.Config',
+    name: 'Umbraco Forms Community MailerLite Config Repository',
+    api: () => import('./mailerlite.config.repository.js'),
+  },
 ];

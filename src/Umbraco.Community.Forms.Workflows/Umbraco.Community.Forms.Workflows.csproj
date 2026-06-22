@@ -16,9 +16,9 @@
 
 	<!-- NuGet package metadata -->
 	<PropertyGroup>
-		<Version>17.0.1</Version>
+		<Version>17.0.2</Version>
 		<Description>
-			Umbraco Forms Workflows by the community, includes mailing list workflows for Campaign Monitor, Mailcoach and MailChimp
+			Umbraco Forms Workflows by the community, includes mailing list workflows for Campaign Monitor, Mailcoach, MailChimp and MailerLite
 		</Description>
 		<Company>Your IT Group</Company>
 		<Product>Umbraco.Community.Forms.Workflows</Product>
@@ -34,7 +34,7 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>umbraco umbraco-marketplace forms</PackageTags>
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-		<PackageReleaseNotes>Targeting Umbraco 17</PackageReleaseNotes>
+		<PackageReleaseNotes>Added MailerLite mailing list workflow. Targeting Umbraco 17</PackageReleaseNotes>
 		<PackageReadmeFile>README.nuget.md</PackageReadmeFile>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -43,7 +43,7 @@
 	<ItemGroup>
 		<PackageReference Include="campaignmonitor-api" Version="6.0.2" />
 		<PackageReference Include="MailChimp.Net.V3" Version="5.7.0" />
-		<PackageReference Include="Umbraco.Forms.Core.Providers" Version="[17.0.0,17.999)" />
+		<PackageReference Include="Umbraco.Forms.Core.Providers" Version="[17.0.0,18)" />
 	</ItemGroup>
 
 	<ItemGroup>

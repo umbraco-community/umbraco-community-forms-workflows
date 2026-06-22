@@ -35,6 +35,11 @@ export type EmailList = {
     updated_at: string;
 };
 
+export type Group = {
+    id: string;
+    name: string;
+};
+
 export type Link = {
     href?: string | null;
     method: Method;
@@ -219,6 +224,35 @@ export type GetMailCoachListsResponses = {
 };
 
 export type GetMailCoachListsResponse = GetMailCoachListsResponses[keyof GetMailCoachListsResponses];
+
+export type GetMailerLiteGroupsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        token?: string;
+    };
+    url: '/MailerLiteGroups';
+};
+
+export type GetMailerLiteGroupsErrors = {
+    /**
+     * The resource is protected and requires an authentication token
+     */
+    401: unknown;
+    /**
+     * The authenticated user does not have access to this resource
+     */
+    403: unknown;
+};
+
+export type GetMailerLiteGroupsResponses = {
+    /**
+     * OK
+     */
+    200: Array<Group>;
+};
+
+export type GetMailerLiteGroupsResponse = GetMailerLiteGroupsResponses[keyof GetMailerLiteGroupsResponses];
 
 export type ClientOptions = {
     baseUrl: 'https://localhost:44368' | (string & {});

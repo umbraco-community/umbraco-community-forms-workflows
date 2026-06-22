@@ -19,6 +19,12 @@ const contexts: Array<ManifestGlobalContext> = [
     name: 'Umbraco Forms Community CampaignMonitor Config Context',
     api: () => import('./campaignmonitor.config.context.js'),
   },
+  {
+    type: 'globalContext',
+    alias: 'Umbraco.Forms.Community.MailerLite.Config.Context',
+    name: 'Umbraco Forms Community MailerLite Config Context',
+    api: () => import('./mailerlite.config.context.js'),
+  },
 ];
 
 export const manifests = contexts;

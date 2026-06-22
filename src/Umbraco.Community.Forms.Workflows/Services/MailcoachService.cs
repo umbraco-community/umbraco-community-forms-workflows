@@ -41,8 +41,11 @@ public class MailcoachService : IMailcoachService
 
         if (response.IsSuccessStatusCode)
         {
-            logger.LogInformation("Successfully added subscriber {email} to Mailcoach list {ListId}",
-                subscriber.Email, emailListId);
+            if (logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("Successfully added subscriber {email} to Mailcoach list {ListId}",
+                    subscriber.Email, emailListId);
+            }
             return true;
         }
         else
@@ -70,8 +73,11 @@ public class MailcoachService : IMailcoachService
 
                 if (emailListsResponse?.Data != null)
                 {
-                    logger.LogDebug("Successfully retrieved {count} email lists from Mailcoach",
-                        emailListsResponse.Data.Count);
+                    if (logger.IsEnabled(LogLevel.Debug))
+                    {
+                        logger.LogDebug("Successfully retrieved {count} email lists from Mailcoach",
+                            emailListsResponse.Data.Count);
+                    }
                     return emailListsResponse.Data;
                 }
             }

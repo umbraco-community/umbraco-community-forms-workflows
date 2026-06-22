@@ -9,6 +9,7 @@ Available workflows include:
 * Mailcoach Email Subscription sign-up
 * MailChimp Email Subscription sign-up
 * Campaign Manager Email Subscription sign-up
+* MailerLite Email Subscription sign-up
 
 ## Configuration
 
@@ -24,6 +25,9 @@ Add Workflow Settings to `appsettings.json` with the following configuration.  T
       },
       "MailChimp": {
         "ApiKey": "mailchimp-api-key"
+      },
+      "MailerLite": {
+        "ApiToken": "your-mailerlite-api-token"
       }
     }
   }
@@ -45,6 +49,12 @@ The Mailcoach workflow configuration accepts an API Key.  If not set, it will fa
 The Campaign Monitor workflow configuration accepts an API Key and Client (if more than one found).  If not set, it will fall back to the settings in `appsettings`.
 
 It also supports opting in for SMS Sending and Tracking.
+
+### MailerLite Workflow
+
+The MailerLite workflow configuration accepts an API Token.  If not set, it will fall back to the settings in `appsettings`.
+
+Subscribers can be added to one or more MailerLite groups, selected via a multi-select picker, and form fields can be mapped to MailerLite subscriber fields.  A "Double Opt In" option marks new subscribers as `unconfirmed` until they confirm their subscription; when disabled, subscribers are added as `active`.
 
 ## Logo
 

@@ -7,4 +7,5 @@ public class CommunityOptions
     public required Mailcoach Mailcoach { get; set; }
     public required MailChimp MailChimp { get; set; }
     public required CampaignMonitor CampaignMonitor { get; set; }
+    public required MailerLite MailerLite { get; set; }
 }

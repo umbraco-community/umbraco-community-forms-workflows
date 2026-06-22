@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [17.0.2] - 2026-06-18
+
+### Added
+- MailerLite workflow for Umbraco Forms
+  - Adds form subscribers to one or more MailerLite groups via a multi-select group picker
+  - FieldMapper support for mapping form fields (and static values) to MailerLite subscriber fields
+  - "Double Opt In" option to mark new subscribers as `unconfirmed` until confirmed (otherwise `active`)
+  - Per-workflow API token override with fallback to `Community:Forms:MailerLite:ApiToken` in `appsettings.json`
+  - Backoffice configuration UI with a token field and group selector populated from the MailerLite API
+
+## [17.0.0]
+
+### Added
+- Migrated Mailcoach workflow to Umbraco 17
+- Added Mailchimp and Campaign Monitor workflows
+
 ## [1.0.0] - 2024-07-29
 
 ### Added
