@@ -38,4 +38,17 @@ export const manifests: Array<UmbExtensionManifest> = [
       group: "common",
     },
   },
+  {
+    type: "propertyEditorUi",
+    alias:
+      "Umbraco.Forms.Community.Workflows.PropertyEditorUi.MailerLiteMailingList",
+    name: "Umbraco Forms Community Workflows MailerLite Mailing List Property Editor UI",
+    element: () =>
+      import("./mailerlite-mailing-list-property-editor.element.js"),
+    meta: {
+      label: "Mailing List",
+      icon: "icon-select",
+      group: "common",
+    },
+  },
 ]
