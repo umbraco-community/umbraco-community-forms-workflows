@@ -1,0 +1,12 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="src/Forms.Test/Forms.Test.csproj" />
+    <Project Path="src/Forms.Testv18/Forms.Testv18.csproj" />
+    <Project Path="src/Umbraco.Community.Forms.Workflows/Umbraco.Community.Forms.Workflows.csproj" />
+  </Folder>
+</Solution>
