@@ -78,7 +78,7 @@ jobs:
   
     # Push the package
     - name: NuGet push
-      run: dotnet nuget push ${{ env.OUTPUT_PATH }}*.nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push ${{ env.OUTPUT_PATH }}/*.nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
 
 
     - name: Create Release Tag v${{ steps.package_version.outputs.version }}
