@@ -1,7 +1,7 @@
 {
   "name": "umbraco-community-forms-workflows",
   "private": true,
-  "version": "16.0.0",
+  "version": "18.0.0",
   "type": "module",
   "scripts": {
     "watch": "vite build --watch",
@@ -11,9 +11,10 @@
     "generate-client": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-ts"
   },
   "devDependencies": {
-    "@hey-api/openapi-ts": "^0.77.0",
-    "@umbraco-cms/backoffice": "^16.0.0",
-    "lit": "^3.3.0",
+    "@hey-api/openapi-ts": "^0.97.0",
+    "@umbraco-cms/backoffice": "^18.0.0",
+    "lit": "^3.3.1",
+    "prettier": "^3.9.1",
     "typescript": "~5.8.3",
     "vite": "^7.0.0"
   }
