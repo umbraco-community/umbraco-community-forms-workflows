@@ -34,10 +34,10 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
   
-    # @umbraco-cms/backoffice@18 / Vite 7 require Node >= 22
+    # @umbraco-cms/backoffice@18 requires Node >= 24.13 and npm >= 11
     - uses: actions/setup-node@v4
       with:
-        node-version: '22'
+        node-version: '24'
     - name: Get Release Version
       id: package_version
       uses: KageKirin/get-csproj-version@v1
