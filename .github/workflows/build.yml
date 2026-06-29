@@ -4,7 +4,8 @@ on:
   pull_request:
 
 env:
-  SOLUTION: Umbraco.Community.Forms.Workflows.sln
+  PLUGIN_PROJECT: src/Umbraco.Community.Forms.Workflows/Umbraco.Community.Forms.Workflows.csproj
+  CLIENT_PROJECT: src/Umbraco.Community.Forms.Workflows/Client
   OUTPUT_PATH: ${{ github.workspace }}/.output
 
 jobs:
@@ -13,32 +14,62 @@ jobs:
     
     strategy:
       matrix:
-        dotnet-version: ['9.x' ]
+        dotnet-version: ['10.x' ]
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
     - name: Fetch all history for all tags and branches
       run: git fetch --prune --unshallow
-      
     - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
-      uses: actions/setup-dotnet@v3
-
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
   
-    - name: Install dependencies
-      run: dotnet restore Umbraco.Community.Forms.Workflows.Release.sln
+    # @umbraco-cms/backoffice@18 requires Node >= 24.13 and npm >= 11
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+        cache: 'npm'
+        cache-dependency-path: '${{env.CLIENT_PROJECT}}/package-lock.json'
+
+    - name: Get Release Version
+      id: package_version
+      run: |
+        version=$(grep -oPm1 '(?<=<Version>)[^<]+' "${{ env.PLUGIN_PROJECT }}")
+        echo "Detected version: $version"
+        echo "version=$version" >> "$GITHUB_OUTPUT"
+
+    - name: Check Version v${{ steps.package_version.outputs.version }} Pre-Release state
+      id: check_prerelease
+      run: |
+        if [[ ${{ steps.package_version.outputs.version }} =~ ^[0-9]+\.[0-9]+\.[0-9]+-.+$ ]]; then
+            echo "Pre-Release detected"
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+        else
+            echo "Pre-Release NOT detected"
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Install Node dependencies
+      run: npm ci
+      working-directory: ${{env.CLIENT_PROJECT}}
+
+    - name: Build Client
+      run: npm run build
+      working-directory: ${{env.CLIENT_PROJECT}}
   
+
     - name: Build
-      run: dotnet build Umbraco.Community.Forms.Workflows.Release.sln --configuration Release --no-restore
+      run: dotnet build ${{ env.PLUGIN_PROJECT }} --configuration Release
         
     - name: Create the package
-      run: dotnet pack Umbraco.Community.Forms.Workflows.Release.sln --configuration Release -o ${{ env.OUTPUT_PATH }}
-      
-    - name: Upload NuGet artifacts
+      run: dotnet pack ${{ env.PLUGIN_PROJECT }} --no-build --no-restore --configuration Release -o ${{ env.OUTPUT_PATH }}
+
+    - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: nuget
-        path: ${{ env.OUTPUT_PATH }}
+        path: ${{ env.OUTPUT_PATH }}/

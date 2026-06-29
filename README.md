@@ -11,6 +11,10 @@ Available workflows include:
 * Campaign Manager Email Subscription sign-up
 * MailerLite Email Subscription sign-up
 
+## Compatibility
+
+This version targets **Umbraco 18** and **Umbraco Forms 18** (.NET 10). For Umbraco 17, use the `17.x` releases.
+
 ## Configuration
 
 Add Workflow Settings to `appsettings.json` with the following configuration.  The Mailing List settings are optional and can be configured directly on the Workflow:

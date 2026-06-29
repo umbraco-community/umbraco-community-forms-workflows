@@ -2,11 +2,10 @@ name: Umbraco.Community.Forms.Workflows - Release
 
 on:
   push:
-    branches: [ main ]
-
+    branches: [ release/* ] 
 env:
-  SOLUTION: Umbraco.Community.Forms.Workflows.Release.sln
   PLUGIN_PROJECT: src/Umbraco.Community.Forms.Workflows/Umbraco.Community.Forms.Workflows.csproj
+  CLIENT_PROJECT: src/Umbraco.Community.Forms.Workflows/Client
   OUTPUT_PATH: ${{ github.workspace }}/.output
 
 jobs:
@@ -14,74 +13,87 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write  # enable GitHub OIDC token issuance for this job
+
+    environment: release
 
     strategy:
       matrix:
-        dotnet-version: ['9.x' ]
+        dotnet-version: ['10.x' ]
 
     steps:
 
-    # - name: Install GitVersion
-    #   uses: gittools/actions/gitversion/setup@v0.9.7
-    #   with:
-    #     versionSpec: '5.x'
 
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
-
-    # Support @umbraco-cms/backoffice@16.0.0 requires node >= 22
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '22'
-        
+      
     - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
-      uses: actions/setup-dotnet@v3
-
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
-        
+  
+    # @umbraco-cms/backoffice@18 requires Node >= 24.13 and npm >= 11
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '24'
     - name: Get Release Version
       id: package_version
-      uses: KageKirin/get-csproj-version@v0.0.1
-      with:
-        file: ${{ env.PLUGIN_PROJECT }}
-        regex: ^(?<major>0|[1-9]\d*)\.(?<minor>0|[1-9]\d*)\.(?<patch>0|[1-9]\d*)(?:-(?<prerelease>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+(?<buildmetadata>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$
+      run: |
+        version=$(grep -oPm1 '(?<=<Version>)[^<]+' "${{ env.PLUGIN_PROJECT }}")
+        echo "Detected version: $version"
+        echo "version=$version" >> "$GITHUB_OUTPUT"
 
     - name: Check Version v${{ steps.package_version.outputs.version }} Pre-Release state
       id: check_prerelease
       run: |
         if [[ ${{ steps.package_version.outputs.version }} =~ ^[0-9]+\.[0-9]+\.[0-9]+-.+$ ]]; then
-            echo Pre-Release detected
-            echo "prerelease=true" >> $GITHUB_OUTPUT
+          echo "Pre-Release detected"
+          echo "prerelease=true" >> $GITHUB_OUTPUT
         else
-            echo Pre-Release NOT detected
-            echo "prerelease=false" >> $GITHUB_OUTPUT
+          echo "Pre-Release NOT detected"
+          echo "prerelease=false" >> $GITHUB_OUTPUT
         fi
 
-    - name: Restore dependencies
-      run: dotnet restore ${{ env.SOLUTION }}
+    - name: Install Node dependencies
+      run: npm ci
+      working-directory: ${{env.CLIENT_PROJECT}}
 
-    - run: dotnet build ${{ env.SOLUTION }} --configuration Release
+    - name: Build Client
+      run: npm run build
+      working-directory: ${{env.CLIENT_PROJECT}}
+
+    - run: dotnet build ${{ env.PLUGIN_PROJECT }} --configuration Release
 
     - name: Create Nuget Packages
-      run: dotnet pack ${{ env.SOLUTION }} --configuration Release -o  ${{ env.OUTPUT_PATH }}
-      
-    - name: Publish to NuGet
-      working-directory: ${{ env.OUTPUT_PATH }}
-      run: dotnet nuget push *.nupkg -s https://api.nuget.org/v3/index.json --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }}
+      run: dotnet pack ${{ env.PLUGIN_PROJECT }} --configuration Release -o  ${{ env.OUTPUT_PATH }}
 
-    - uses: avakar/tag-and-release@v1
-      name: Create Release Tag v${{ steps.package_version.outputs.version }}
+  # Get a short-lived NuGet API key
+    - name: NuGet login (OIDC → temp API key)
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: ${{ secrets.NUGET_USER }} # Recommended: use a secret like ${{ secrets.NUGET_USER }} for your nuget.org username (profile name), NOT your email address
+  
+    # Push the package
+    - name: NuGet push
+      run: dotnet nuget push ${{ env.OUTPUT_PATH }}*.nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json
+
+
+    - name: Create Release Tag v${{ steps.package_version.outputs.version }}
+      uses: softprops/action-gh-release@v2
       id: release
       with:
         tag_name: v${{ steps.package_version.outputs.version }}
+        name: v${{ steps.package_version.outputs.version }}
         prerelease: ${{ steps.check_prerelease.outputs.prerelease }}
+        generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
+
     - name: Release information for v${{ steps.package_version.outputs.version }}
       run: |
-        echo Release Id: ${{ steps.release.outputs.id }}
-        echo Upload URL: ${{ steps.release.outputs.upload_url }}
-        echo Release URL: ${{ steps.release.outputs.html_url }}
+        echo "Release Id: ${{ steps.release.outputs.id }}"
+        echo "Upload URL: ${{ steps.release.outputs.upload_url }}"
+        echo "Release URL: ${{ steps.release.outputs.url }}"
