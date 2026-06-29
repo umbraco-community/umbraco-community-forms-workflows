@@ -11,11 +11,11 @@
     "generate-client": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-ts"
   },
   "devDependencies": {
-    "@hey-api/openapi-ts": "^0.97.0",
+    "@hey-api/openapi-ts": "^0.99.0",
     "@umbraco-cms/backoffice": "^18.0.0",
-    "lit": "^3.3.1",
+    "lit": "^3.3.3",
     "prettier": "^3.9.1",
-    "typescript": "~5.8.3",
-    "vite": "^7.0.0"
+    "typescript": "~6.0.3",
+    "vite": "^8.1.0"
   }
 }

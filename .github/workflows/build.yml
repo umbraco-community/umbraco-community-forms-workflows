@@ -4,8 +4,8 @@ on:
   pull_request:
 
 env:
-  PLUGIN_PROJECT: Umbraco.Community.Forms.Workflows/Umbraco.Community.Forms.Workflows.csproj
-  CLIENT_PROJECT: Umbraco.Community.Forms.Workflows/Client
+  PLUGIN_PROJECT: src/Umbraco.Community.Forms.Workflows/Umbraco.Community.Forms.Workflows.csproj
+  CLIENT_PROJECT: src/Umbraco.Community.Forms.Workflows/Client
   OUTPUT_PATH: ${{ github.workspace }}/.output
 
 jobs:
@@ -27,10 +27,11 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
   
+    # @umbraco-cms/backoffice@18 / Vite 7 require Node >= 22
     - name: Setup Node
       uses: actions/setup-node@v4
       with:
-        node-version-file: '${{env.CLIENT_PROJECT}}/package.json'
+        node-version: '22'
         cache: 'npm'
         cache-dependency-path: '${{env.CLIENT_PROJECT}}/package-lock.json'
 
